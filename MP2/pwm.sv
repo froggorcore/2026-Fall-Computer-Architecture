@@ -1,7 +1,7 @@
 // PWM generator to fade LED
 
 module pwm #(
-    parameter PWM_INTERVAL = 2000       // CLK frequency is 12MHz, so 1,200 cycles is 100us
+    parameter PWM_INTERVAL = 2000
 )(
     input logic clk,
     output logic [$clog2(PWM_INTERVAL) - 1:0] pwm_count = 0

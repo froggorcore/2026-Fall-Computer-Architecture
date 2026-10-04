@@ -4,7 +4,7 @@
 // fade_rgb top level module
 
 module top #(
-    parameter PWM_INTERVAL = 2000
+    parameter PWM_INTERVAL = 2000 // sets length of PWM period in clock cycles
 )(
     input logic  clk,
     output logic RGB_R,
@@ -15,7 +15,7 @@ module top #(
     // Shared counter value
     logic [$clog2(PWM_INTERVAL) - 1:0] pwm_value;
 
-    //
+    // values for each RGB LED, number of cycles each color is on during the PWM period
     logic [$clog2(PWM_INTERVAL) - 1:0] red_level;
     logic [$clog2(PWM_INTERVAL) - 1:0] green_level;
     logic [$clog2(PWM_INTERVAL) - 1:0] blue_level;

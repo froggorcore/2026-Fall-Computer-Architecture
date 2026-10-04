@@ -13,7 +13,7 @@ module fade_rgb_tb;
     top # (
         .PWM_INTERVAL   (PWM_INTERVAL)
     ) u0 (
-        .clk            (clk),
+        .clk              (clk),
         .RGB_R            (RGB_R),
         .RGB_G            (RGB_G),
         .RGB_B            (RGB_B)
@@ -22,12 +22,12 @@ module fade_rgb_tb;
     initial begin
         $dumpfile("fade_rgb.vcd");
         $dumpvars(0, fade_rgb_tb);
-        #200000000
+        #200000000 // run simulation for 2 seconds
         $finish;
     end
 
     always begin
-        #4.1667
+        #4.1667 // trying to simulate at 12MHz
         clk = ~clk;
     end
 

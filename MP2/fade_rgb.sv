@@ -3,13 +3,13 @@
 module fade_rgb #(
     parameter STATE_INTERVAL = 2000000,     // CLK freq is 12MHz, so 2000000 cycles is 1/6th of a second
     parameter PWM_INTERVAL = 2000,
-    parameter CYCLES_PER_STATE = STATE_INTERVAL / PWM_INTERVAL,
-    parameter INC_DEC_VAL = PWM_INTERVAL / CYCLES_PER_STATE
+    parameter PWM_PERIODS_PER_STATE = STATE_INTERVAL / PWM_INTERVAL,     // PWM periods per state
+    parameter INC_DEC_VAL = PWM_INTERVAL / PWM_PERIODS_PER_STATE     // how many cycles to increase / decrease LED on time during PWM period
 )(
     input logic clk,
-    output logic [$clog2(PWM_INTERVAL+1)-1:0] red,
-    output logic [$clog2(PWM_INTERVAL+1)-1:0] green,
-    output logic [$clog2(PWM_INTERVAL+1)-1:0] blue
+    output logic [$clog2(PWM_INTERVAL)-1:0] red,
+    output logic [$clog2(PWM_INTERVAL)-1:0] green,
+    output logic [$clog2(PWM_INTERVAL)-1:0] blue
 
 );
 
@@ -26,13 +26,13 @@ module fade_rgb #(
     logic [2:0] next_state;
 
     // Declare next output variables
-    logic [$clog2(PWM_INTERVAL+1)-1:0] red_pwm_value = PWM_INTERVAL;
-    logic [$clog2(PWM_INTERVAL+1)-1:0] green_pwm_value = 0;
-    logic [$clog2(PWM_INTERVAL+1)-1:0] blue_pwm_value = 0;
+    logic [$clog2(PWM_INTERVAL)-1:0] red_pwm_value = PWM_INTERVAL;
+    logic [$clog2(PWM_INTERVAL)-1:0] green_pwm_value = 0;
+    logic [$clog2(PWM_INTERVAL)-1:0] blue_pwm_value = 0;
 
     // Declare variables for timing state transitions
     logic [$clog2(STATE_INTERVAL) - 1:0] count = 0;
-    logic [$clog2(CYCLES_PER_STATE) - 1:0] inc_dec_count = 0;
+    logic [$clog2(PWM_PERIODS_PER_STATE) - 1:0] inc_dec_count = 0;
     logic time_to_inc_dec = 1'b0; // time to go to next PWM duty cycle
     logic time_to_transition = 1'b0;
 
@@ -100,10 +100,9 @@ module fade_rgb #(
         endcase
     end
 
-
     // Implement counter for timing state transitions
     always_ff @(posedge time_to_inc_dec) begin
-        if (inc_dec_count == CYCLES_PER_STATE - 1) begin
+        if (inc_dec_count == PWM_PERIODS_PER_STATE - 1) begin
             inc_dec_count <= 0;
             time_to_transition <= 1'b1;
         end
